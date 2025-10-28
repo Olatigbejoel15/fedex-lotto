@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lotto Winner Dashboard</title>
+  <style>
+    :root {
+      --primary: #ff7f50; /* Orange */
+      --secondary: #6a0dad; /* Purple */
+      --dark-bg: #160d1c;
+      --card-bg: #24142e;
+      --text-light: #f3f3f3;
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--gradient);
+      padding: 1rem 2rem;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-left {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    header button {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    header button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* ---------- DASHBOARD ---------- */
+    .dashboard {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto;
+    }
+
+    .welcome-section {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 15px;
+      text-align: left;
+      box-shadow: 0 0 10px rgba(255, 127, 80, 0.2);
+    }
+
+    .welcome-section h2 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(255, 127, 80, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(255, 127, 80, 0.4);
+    }
+
+    .info-card h3 {
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .info-card p {
+      color: #ddd;
+      font-size: 1rem;
+    }
+
+    .btn-claim {
+      margin-top: 1rem;
+      align-self: start;
+      background: var(--gradient);
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 25px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-claim:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 127, 80, 0.6);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: auto;
+      background: #12091a;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* ---------- Modal ---------- */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(255, 127, 80, 0.3);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .modal-content p {
+      color: #eee;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .btn-close, .btn-pay {
+      background: var(--gradient);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-close:hover, .btn-pay:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255, 127, 80, 0.6);
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* ---------- Mobile Friendly ---------- */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.2rem;
+      }
+
+      .header-left {
+        font-size: 1.1rem;
+      }
+
+      .header-right {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      header button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .dashboard {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .btn-claim {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">🏆 Winner </div>
+    <div class="header-right">
+      <span>Welcome, Sonia</span>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="welcome-section">
+      <h2>Congratulations, Sonia! 🎉</h2>
+      <p>You’ve officially won the Lotto draw! Below are your details. Keep them safe and claim your reward responsibly.</p>
+      <button class="btn-claim" id="claimBtn">Claim Prize</button>
+    </section>
+
+    <section class="info-grid">
+      <div class="info-card">
+        <h3>🏠 Address</h3>
+        <p>21, Empire way gretna, Dumfriesshire , DG16 5BN</p>
+      </div>
+
+      <div class="info-card">
+        <h3>💰 Total Winnings</h3>
+        <p>$300,000.54</p>
+      </div>
+
+      <div class="info-card">
+        <h3>🎟️ Winning Ticket</h3>
+        <p>#WIN-85430900-07024570000S</p>
+      </div>
+
+      <div class="info-card">
+        <h3>🎟️ Serial Number</h3>
+        <p>#755551111</p>
+      </div>
+
+      <div class="info-card">
+        <h3>🎟️ Ref Number</h3>
+        <p>#990078567</p>
+      </div>
+
+      <div class="info-card">
+        <h3>📅 Date Won</h3>
+        <p>October 24, 2025</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 National Lotto Commission | All Rights Reserved
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="accessModal">
+    <div class="modal-content" id="modalContent">
+      <h2>🚫 Access Restricted</h2>
+      <p>You have to pay a tax fee of <strong>$15,000</strong> before claiming your prize.</p>
+      <button class="btn-pay" id="payNowBtn">Pay Now</button>
+      <br><br>
+      <button class="btn-close" id="closeModal">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const claimBtn = document.getElementById('claimBtn');
+    const modal = document.getElementById('accessModal');
+    const modalContent = document.getElementById('modalContent');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const defaultModalHTML = modalContent.innerHTML;
+
+    claimBtn.addEventListener('click', () => {
+      modalContent.innerHTML = defaultModalHTML; // reset modal each time
+      modal.style.display = 'flex';
+      attachModalEvents();
+    });
+
+    function attachModalEvents() {
+      const payNowBtn = document.getElementById('payNowBtn');
+      const closeModal = document.getElementById('closeModal');
+
+      payNowBtn.addEventListener('click', () => {
+        modalContent.innerHTML = `
+          <h2>📞 Contact Officer</h2>
+          <p>Please contact the officer in charge of your account to process this payment.</p>
+          <button class="btn-close" id="finalClose">Close</button>
+        `;
+        document.getElementById('finalClose').addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+      });
+
+      closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    }
+
+    window.onclick = (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    };
+
+    logoutBtn.addEventListener('click', () => {
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
